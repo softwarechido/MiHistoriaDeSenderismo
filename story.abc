@@ -1,0 +1,181 @@
+//story.abc
+@start
+    *say
+        Hola, buenos días, te levantas de la cama y miras afuera. Hay un día maravilloso. ¿Te gustaría dar un paseo?
+    *show
+        // add visuals to every scene
+        template: 'default'
+        background:'https://sfb-framework.s3.amazonaws.com/examples/images/alps.jpg'
+        title: 'Mi Historia de Senderismo'
+    *then
+        clear indeciso
+        hear si, dar un paseo {
+            -> dar paseo
+        }
+        hear no{
+            flag indeciso
+            ->indeciso
+        }
+
+@indeciso
+    *say
+        Pasas la mañana en casa, haciendo tareas y limpiando. Al final de la mañana, miras afuera y notas que el día esta cada vez más lindo. Se te ocurre que todavía tienes tiempo para dar una caminata. ¿Reconsideras y vas de excursión?
+    *then
+        hear si, dar un paseo, reconsidero, me voy de excursión{
+            ->dar paseo
+        }
+        hear no{
+            ->no doy el paseo
+        }
+        
+@no doy el paseo
+    *say
+        te quedas en casa haciendo tareas y limpiando y el día se pasa y te vas a dormir sintiéndote malhumorado. Qué desperdicio de un hermoso día. Y así llegas al final de tu aventura
+
+@dar paseo
+    *say
+        chido! Sientes mucha emoción. Empiezas a prepararte para tu aventura. Eliges un hermoso lago alpino cercano como tu destino de senderismo y preparas tu mochila. Metes tu teléfono, tu botiquín de primeros auxilios, una herramienta pequeña, una bolsa de granola y una chaqueta liviana para la lluvia. Te pones ropa cómoda y amarras tus zapatos para caminar, ya casi estás listo.
+    *recap
+        Seleccionas un destino para tu paseo, te vistes y empacas lo necesario
+    *then
+        ->agua
+    
+@agua
+    *say
+        ¿Cuántas botellas de agua llevarás?
+    *reprompt
+        Te recomiendo que lleves al menos tres botellas. ¿Cuántas botellas llevarás?
+    *then
+        slot botellas to 'AMAZON.NUMBER'
+        hear {botellas}, {botellas} botellas, {botellas} botella, {botellas} bote, {botellas} botes{
+            if botellas <= 0 {
+                -> insuficiente agua
+            }
+            if botellas > 4 {
+                -> mucha agua
+            }
+            -> sacas agua
+        }
+        
+@insuficiente agua
+    *say
+        Necesitarás agua
+    *then
+        ->agua
+        
+@mucha agua
+    *say
+        chale. Solo tienes 4 botellas en el refri. 
+    *then
+        ->agua
+
+@sacas agua
+    *say
+        Sacas {botellas} del refri y tomas el resto de tu equipo para comenzar la aventura.
+    *then
+        -> manejo al parque
+        
+@manejo al parque
+    *say 
+        Te metes a tu auto y manejas camino al sendero, escuchas tu álbum favorito de sonidos del bosque. Sientes mucha emoción.
+    *then
+        if indeciso {
+            -> estacionamiento lleno
+        }
+        -> inicio camino sendero
+
+@estacionamiento lleno
+    *say
+        Como has llegado tarde, el estacionamiento está lleno, ahora tienes que esperar unos minutos para obtener un espacio disponible... Finalmente te estacionas.
+    *then
+        -> inicio camino sendero
+
+@inicio camino sendero
+    *say
+        Empiezas a caminar hacia el lago alpino. Sientes el esfuerzo en tus piernas. Tu mente comienza a aclararse y te sientes unido con la naturaleza. Minutos después, la vegetación se vuelve más corta y más escasa, un arroyo corre a tu izquierda. Entonces lo ves, una extensión azul más adelante. El azul crece a medida que te acercas. Luego, de repente, el lago está justo frente a ti, rodeado por tres picos rocosos. ¡Qué hermosa vista!, ahora puedes permanecer aquí y tomar unas fotografías o decides bajar el sendero y regresar a casa. ¿qué harás?
+    *recap 
+        caminas por todo el lago alpino y llegaste a una hermosa vista, ahora puedes permanecer aquí y tomar fotos o regresar a casa. ¿qué harás? 
+    *then
+        hear tomar fotos, me tomo fotos, me quedo {
+            -> fotos
+        }
+        hear bajar el sendero, regresar a casa {
+            -> regresar a casa
+        }
+        
+@fotos
+    *say 
+        clic clic un par de fotos y decides regresar a casa.
+    *then
+        -> regresar a casa
+
+@regresar a casa
+    *say 
+        Uffff, finalmente de regreso en casa, ha sido un día maravilloso y aquí termina tu aventura.
+    *then
+        ->end
+@help
+    *say
+        ok, te ayudo con gusto, en esta historia tu tomas las decisiones y elijes el camino. Siempre me puedes decir comenzar de nuevo o salir para terminar, ahora continuaré donde te quedaste. 
+    *then
+        flag helped
+        >> BACK
+
+@global prepend
+    *show
+        // add visuals to every scene
+        template: 'default'
+        background:'https://sfb-framework.s3.amazonaws.com/examples/images/alps.jpg'
+        title: 'Mi Historia de Senderismo'
+
+@global append
+    *then
+        // listen everywhere for a few helpful phrases
+        hear vovler a empezar, empezar de nuevo, reinicia {
+            // Tell the framework to restart from the beginning
+            >> RESTART
+        }
+        hear repite, repiteme, repetir {
+            // Tell the framework to repeat everything the player just heard. You can use >> REPROMPT which only plays the reprompt content
+            >> REPEAT
+        }
+        hear ayuda, ayudame {
+            -> help
+        }
+        hear atrás {
+            >> back
+        }
+        // if the player hasn't heard the help message yet and says something the framework didn't catch, play the help message
+        if !helped {
+            hear * {
+                -> help
+            }
+        }
+
+// SPECIAL SCENE: @resume is a special scene that will play when the player comes back to the game after leaving
+@resume
+	*say
+		Me encanta que regreses a tu historia de senderismo, bienvenido de nuevo. Quieres iniciar dónde te quedaste?
+	*then
+		hear si {
+            // Tell the framework to pick up where they last left off
+			>> RESUME
+		}
+		hear no {
+			>> RESTART
+		}
+
+// SPECIAL SCENE: @pause is a special scene that plays before the skill pauses
+@pause
+	*say
+		Gracias por jugar al senderismo, simplemente dime abre mi historia de senderismo y continuaremos. Adios.
+	*then
+		>> PAUSE
+
+@end
+	*say
+		Gracias por jugar mi historia de senderismo: ¿quieres volver a empezar o salir y terminar la aventura?
+	*then
+		hear salir {
+			>> END
+		}
