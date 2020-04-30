@@ -1,0 +1,28 @@
+<speak> 
+    Ok, lo haré con estilo. 
+    <prosody rate="medium" pitch="high"> 
+        Bienveniddos
+    </prosody>.
+    <prosody rate="medium" pitch="high"> 
+        ¿Qué passssó?</prosody>.
+    <prosody rate="medium" pitch="high"> 
+        ¿Qué le ddoy?
+    </prosody>.
+    <prosody rate="medium" pitch="high"> 
+        ¿Qué va querer?
+    </prosody>.
+    <prosody rate="medium" pitch="high"> 
+        ¿Qué va llevar?
+    </prosody>. 
+    <prosody rate="medium" pitch="high"> 
+        Para eso estoy
+    </prosody>. 
+    <prosody rate="medium" pitch="high"> 
+        Paraservirle
+    </prosody>. 
+    <prosody rate="medium" pitch="high"> 
+    u, u</prosody>.<break time="1s">
+    </break>
+    <say-as interpret-as="interjection">wórales</say-as>. 
+    cuanta creatividad ¿no?... Fuera de broma, bienvenidos, me da mucho gusto que estén aquí 
+</speak>
