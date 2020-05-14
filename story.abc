@@ -131,7 +131,7 @@
 @global append
     *then
         // listen everywhere for a few helpful phrases
-        hear vovler a empezar, empezar de nuevo, reinicia {
+        hear volver a empezar, empezar de nuevo, reinicia {
             // Tell the framework to restart from the beginning
             >> RESTART
         }
